@@ -8,7 +8,7 @@
 using namespace std;
 
 void readFileToDisk(Disk *disk) {
-    ifstream file("src/games.csv");
+    ifstream file("src/games.txt");
     if (file.fail()) {
         cout << "File failed to open" << endl;
         return;
@@ -17,6 +17,8 @@ void readFileToDisk(Disk *disk) {
 
     Record record = Record();
     string line;
+    // '\t' for the text format, ',' for the csv format
+    char delimitter = '\t';
 
     getline(file, line); // Get rid of header row
     while (getline(file, line))
@@ -28,7 +30,7 @@ void readFileToDisk(Disk *disk) {
         unsigned int gameDate = 0;
 
         // Handle Date Data
-        getline(rowData, temp, ',');
+        getline(rowData, temp, delimitter);
         istringstream datestring(temp);
         string segment;
         // Day
@@ -43,7 +45,7 @@ void readFileToDisk(Disk *disk) {
         record.GAME_DATE_EST = gameDate;
 
         // Team ID
-        getline(rowData, temp, ',');
+        getline(rowData, temp, delimitter);
         if (temp == "") {
             NULLChecker = NULLChecker | (1 << 0);
             record.TEAM_ID_home = 0;
@@ -52,7 +54,7 @@ void readFileToDisk(Disk *disk) {
         }
 
         // Points Home
-        getline(rowData, temp, ',');
+        getline(rowData, temp, delimitter);
         if (temp == "") {
             NULLChecker = NULLChecker | (1 << 1);
             record.PTS_home = 0;
@@ -60,7 +62,7 @@ void readFileToDisk(Disk *disk) {
             record.PTS_home = (unsigned short int)stoul(temp);
         }
         // Field Goal %
-        getline(rowData, temp, ',');
+        getline(rowData, temp, delimitter);
         if (temp == "") {
             NULLChecker = NULLChecker | (1 << 2);
             record.FG_PCT_home = 0;
@@ -69,7 +71,7 @@ void readFileToDisk(Disk *disk) {
         }
 
         // Free Throw %
-        getline(rowData, temp, ',');
+        getline(rowData, temp, delimitter);
         if (temp == "") {
             NULLChecker = NULLChecker | (1 << 3);
             record.FT_PCT_home = 0;
@@ -78,7 +80,7 @@ void readFileToDisk(Disk *disk) {
         }
 
         // Field Goal 3Pt %
-        getline(rowData, temp, ',');
+        getline(rowData, temp, delimitter);
         if (temp == "") {
             NULLChecker = NULLChecker | (1 << 4);
             record.FG3_PCT_home = 0;
@@ -87,7 +89,7 @@ void readFileToDisk(Disk *disk) {
         }
 
         // Assists
-        getline(rowData, temp, ',');
+        getline(rowData, temp, delimitter);
         if (temp == "") {
             NULLChecker = NULLChecker | (1 << 5);
             record.AST_home = 0;
@@ -96,7 +98,7 @@ void readFileToDisk(Disk *disk) {
         }
 
         // Rebounds
-        getline(rowData, temp, ',');
+        getline(rowData, temp, delimitter);
         if (temp == "") {
             NULLChecker = NULLChecker | (1 << 6);
             record.REB_home = 0;
@@ -105,7 +107,7 @@ void readFileToDisk(Disk *disk) {
         }
 
         // Win
-        getline(rowData, temp, ',');
+        getline(rowData, temp, delimitter);
         if (temp == "") {
             NULLChecker = NULLChecker | (1 << 7);
             record.HOME_TEAM_WINS = 0;
