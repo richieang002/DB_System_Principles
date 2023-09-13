@@ -10,10 +10,10 @@ using namespace std;
 void readFileToDisk(Disk *disk) {
     ifstream file("src/games.txt");
     if (file.fail()) {
-        cout << "File failed to open" << endl;
+        cout << ">> File failed to open" << endl;
         return;
     }
-    cout << "File is opened" << endl;
+    cout << ">> File is opened" << endl;
 
     Record record = Record();
     string line;
@@ -121,6 +121,20 @@ void readFileToDisk(Disk *disk) {
         disk->insertRecord(&record);
     }
     file.close();
+    cout << ">> Data added to disk" << endl;
+    cout << ">> File is closed" << endl;
+}
+
+void verifyStorage(Disk *disk) {
+    cout << "\n>>>>>>>>>>>>>>>>>>>>>>>>> STORAGE VERIFICATION <<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+    (*disk).printDiskState();
+    cout << "\n>> First record details [Record 0] :" << endl;
+    (*disk).printRecord((*disk).getRecordByRow(0));
+    cout << "\n>> First record with missing data [Record 19175] :" << endl;
+    (*disk).printRecord((*disk).getRecordByRow(19175));
+    cout << "\n>> Last record details [Record 26650] :" << endl;
+    (*disk).printRecord((*disk).getRecordByRow(26650));
+    cout << "\n>>>>>>>>>>>>>>>>>>>>>>>>> STORAGE VERIFICATION END <<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 }
 
 int main()
@@ -130,10 +144,13 @@ int main()
     const unsigned int DISKSIZE = 100 * pow(2, 20);
     Disk disk = Disk(DISKSIZE, FIXED_BLOCKSIZE);
 
+    // Print initial disk state
     disk.printDiskState();
+
+    // Read data file into disk
     readFileToDisk(&disk);
 
-    disk.printDiskState();
-    disk.printRecord(disk.getRecordByRow(19175));
-    disk.printRecord(disk.getRecordByRow(26650));
+    // Verify data in storage is working as intended
+    verifyStorage(&disk);
+
 }

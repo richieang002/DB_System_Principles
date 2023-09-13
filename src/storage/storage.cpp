@@ -24,12 +24,12 @@ Disk::Disk(unsigned int inDiskSize, unsigned int inBlockSize) {
 }
 
 void Disk::printDiskState() {
-    cout << endl << "<<<<<<<< Disk Storage Details >>>>>>>>" << endl;
+    cout << endl << "Current Disk Details" << endl;
     cout << "===========================================" << endl;
     cout << "Storage Used: " << diskSizeUsed / pow(2, 20) << " / " << diskSize / pow(2, 20) << " MB" << endl;
     cout << "Blocks Allocated: " << (diskSizeUsed > 0 ? blockIndex + 1 : 0) << endl;
     cout << "Records Allocated: " << (diskSizeUsed > 0 ? recordIndex + 1 + blockIndex * maxRecordsPerBlock : recordIndex + blockIndex * maxRecordsPerBlock) << endl;
-    cout << "===========================================" << endl;
+    cout << "===========================================\n" << endl;
 }
 
 Record *Disk::getRecord(unsigned int inBlockIndex, unsigned int inRecordIndex) {
