@@ -16,8 +16,8 @@ struct Record {
     unsigned short int PTS_home; // 2 Bytes
     unsigned short int AST_home; // 2 Bytes
     unsigned short int REB_home; // 2 Bytes
-    bool HOME_TEAM_WINS; // 1 Byte + 1 Byte Padding
-    unsigned char NULLChecker;
+    bool HOME_TEAM_WINS; // 1 Byte
+    unsigned char NULLChecker; // 1 Byte
     // Total 28 Bytes
 };
 
@@ -39,6 +39,8 @@ public:
     void printDiskState();
 
     Record *getRecord(unsigned int inBlockIndex, unsigned int inRecordIndex);
+
+    Record *getRecordByRow(int rowNumber);
 
     void printRecord(Record *record);
 

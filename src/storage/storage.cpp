@@ -27,8 +27,8 @@ void Disk::printDiskState() {
     cout << endl << "<<<<<<<< Disk Storage Details >>>>>>>>" << endl;
     cout << "===========================================" << endl;
     cout << "Storage Used: " << diskSizeUsed / pow(2, 20) << " / " << diskSize / pow(2, 20) << " MB" << endl;
-    cout << "Blocks Allocated: " << blockIndex + 1<< endl;
-    cout << "Records Allocated: " << recordIndex + blockIndex * maxRecordsPerBlock << endl;
+    cout << "Blocks Allocated: " << (diskSizeUsed > 0 ? blockIndex + 1 : 0) << endl;
+    cout << "Records Allocated: " << (diskSizeUsed > 0 ? recordIndex + 1 + blockIndex * maxRecordsPerBlock : recordIndex + blockIndex * maxRecordsPerBlock) << endl;
     cout << "===========================================" << endl;
 }
 
@@ -37,6 +37,14 @@ Record *Disk::getRecord(unsigned int inBlockIndex, unsigned int inRecordIndex) {
     if (inBlockIndex == blockIndex && inRecordIndex > recordIndex) return nullptr;
 
     return reinterpret_cast<Record *>(diskAddressPtr + (inBlockIndex * blockSize) + (inRecordIndex * sizeof(Record)));
+}
+
+Record *Disk::getRecordByRow(int rowNo) {
+    if (rowNo >= blockIndex * maxRecordsPerBlock + recordIndex) return nullptr;
+    int blockNo = rowNo / maxRecordsPerBlock == 0 ? 0 : rowNo / maxRecordsPerBlock;
+    int rowInBlock = rowNo % maxRecordsPerBlock;
+
+    return reinterpret_cast<Record *>(diskAddressPtr + (blockNo * blockSize) + (rowInBlock * sizeof(Record)));
 }
 
 void Disk::printRecord(Record *record) {
@@ -48,26 +56,17 @@ void Disk::printRecord(Record *record) {
 
     // Convert integer to date string format
     string gameDate = std::to_string(record->GAME_DATE_EST / 1000000 % 100) + "/" + std::to_string(record->GAME_DATE_EST / 10000 % 100) + "/" + std::to_string(record->GAME_DATE_EST % 10000);
-    string output;
 
     cout << "~~ [Home Team] Record Details ~~" << endl;
     cout << "Game Date: " << gameDate << endl;
-    output = (record->NULLChecker >> 0) & 1 ? "NULL" : to_string(record->TEAM_ID_home);
-    cout << "Team ID: " << output << endl;
-    output = (record->NULLChecker >> 1) & 1 ? "NULL" : to_string(record->PTS_home);
-    cout << "Points: " << output << endl;
-    output = (record->NULLChecker >> 2) & 1 ? "NULL" : to_string(record->FG_PCT_home);
-    cout << "Field Goal %: " << output << endl;
-    output = (record->NULLChecker >> 3) & 1 ? "NULL" : to_string(record->FT_PCT_home);
-    cout << "Free Throw %: " << output << endl;
-    output = (record->NULLChecker >> 4) & 1 ? "NULL" : to_string(record->FG3_PCT_home);
-    cout << "Field Goal 3Pts %: " << output << endl;
-    output = (record->NULLChecker >> 5) & 1 ? "NULL" : to_string(record->AST_home);
-    cout << "Assists: " << output << endl;
-    output = (record->NULLChecker >> 6) & 1 ? "NULL" : to_string(record->REB_home);
-    cout << "Rebounds: " << output << endl;
-    output = (record->NULLChecker >> 7) & 1 ? "NULL" : to_string(record->HOME_TEAM_WINS);
-    cout << "Wins: " << output << endl;
+    cout << "Team ID: " << ((record->NULLChecker >> 0) & 1 ? "NULL" : to_string(record->TEAM_ID_home)) << endl;
+    cout << "Points: " << ((record->NULLChecker >> 1) & 1 ? "NULL" : to_string(record->PTS_home)) << endl;
+    cout << "Field Goal %: " << ((record->NULLChecker >> 2) & 1 ? "NULL" : to_string(record->FG_PCT_home)) << endl;
+    cout << "Free Throw %: " << ((record->NULLChecker >> 3) & 1 ? "NULL" : to_string(record->FT_PCT_home)) << endl;
+    cout << "Field Goal 3Pts %: " << ((record->NULLChecker >> 4) & 1 ? "NULL" : to_string(record->FG3_PCT_home)) << endl;
+    cout << "Assists: " << ((record->NULLChecker >> 5) & 1 ? "NULL" : to_string(record->AST_home)) << endl;
+    cout << "Rebounds: " << ((record->NULLChecker >> 6) & 1 ? "NULL" : to_string(record->REB_home)) << endl;
+    cout << "Wins: " << ((record->NULLChecker >> 7) & 1 ? "NULL" : to_string(record->HOME_TEAM_WINS)) << endl;
 }
 
 Record *Disk::insertRecord(Record *record) {
@@ -135,11 +134,11 @@ void Disk::printBlock(unsigned int inBlockIndex) {
 }
 
 int Disk::getNumBlocksUsed() {
-    return blockIndex;
+    return diskSizeUsed > 0 ? blockIndex + 1 : 0;
 }
 
 int Disk::getNumRecordsUsed() {
-    return blockIndex * maxRecordsPerBlock + recordIndex;
+    return diskSizeUsed > 0 ? recordIndex + 1 + blockIndex * maxRecordsPerBlock : recordIndex + blockIndex * maxRecordsPerBlock;
 }
 
 int Disk::getNumRecordsByBlock(unsigned int inBlockIndex) {

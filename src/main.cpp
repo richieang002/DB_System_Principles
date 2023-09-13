@@ -113,7 +113,7 @@ void readFileToDisk(Disk *disk) {
             record.HOME_TEAM_WINS = stoul(temp) == 0 ? false : true;
         }
 
-        cout << "NULL_CHECKER on adding: " << +NULLChecker << endl;
+        // Null Positions
         record.NULLChecker = NULLChecker;
 
         disk->insertRecord(&record);
@@ -128,10 +128,10 @@ int main()
     const unsigned int DISKSIZE = 100 * pow(2, 20);
     Disk disk = Disk(DISKSIZE, FIXED_BLOCKSIZE);
 
-    disk.printBlock(0);
+    disk.printDiskState();
     readFileToDisk(&disk);
 
-    disk.printBlock(0);
-    cout << disk.getNumRecordsByBlock(1) << endl;
-    cout << disk.getNumRecordsUsed() << endl;
+    disk.printDiskState();
+    disk.printRecord(disk.getRecordByRow(19175));
+    disk.printRecord(disk.getRecordByRow(26650));
 }
