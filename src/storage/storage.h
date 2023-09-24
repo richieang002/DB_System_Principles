@@ -13,12 +13,13 @@ struct Record {
     float FG_PCT_home; // 4 Bytes
     float FT_PCT_home; // 4 Bytes
     float FG3_PCT_home; // 4 Bytes
+    struct Record *next; // 4 Bytes
     unsigned short int PTS_home; // 2 Bytes
     unsigned short int AST_home; // 2 Bytes
     unsigned short int REB_home; // 2 Bytes
     bool HOME_TEAM_WINS; // 1 Byte
     unsigned char NULLChecker; // 1 Byte
-    // Total 28 Bytes
+    // Total 32 Bytes
 };
 
 class Disk {
@@ -33,7 +34,7 @@ private:
     unsigned int diskSizeUsed;
 
 public:
-    // constructor
+    // Constructor
     Disk(unsigned int inDiskSize, unsigned int inBlockSize);
 
     void printDiskState();

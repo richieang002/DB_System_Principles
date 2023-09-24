@@ -133,6 +133,7 @@ void Disk::printBlock(unsigned int inBlockIndex) {
     cout << "===========================================" << endl;
 }
 
+
 int Disk::getNumBlocksUsed() {
     return diskSizeUsed > 0 ? blockIndex + 1 : 0;
 }
